@@ -6,10 +6,12 @@ import { supabase } from '../supabaseClient';
 interface NavbarProps {
   session: Session | null;
   onOpenLogin: () => void;
+  onOpenSignup: () => void;
   onOpenProfile: () => void;
+  onNavigateCreate: () => void;
 }
 
-export default function Navbar({ session, onOpenLogin, onOpenProfile }: NavbarProps) {
+export default function Navbar({ session, onOpenLogin, onOpenSignup, onOpenProfile, onNavigateCreate }: NavbarProps) {
   const [avatarUrl, setAvatarUrl] = useState<string>('');
 
   // Fetch just the avatar for the small navbar icon

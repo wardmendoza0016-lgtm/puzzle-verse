@@ -105,7 +105,21 @@ export default function CreatePuzzle({ session }: CreatePuzzleProps) {
       if (insertError) throw insertError;
 
       // 3. Navigate to lobby waiting room
-      navigate(`/lobby/${puzzle.id}`);
+      const { data: gameSession, error: sessionError } = await supabase
+        .from('game_sessions')
+        .insert({
+          puzzle_id: puzzle.id,
+          host_id: session.user.id,
+          status: 'lobby',
+          active_player_ids: [session.user.id],
+        })
+        .select()
+        .single();
+
+      if (sessionError) throw sessionError;
+
+      // 4. Navigate to lobby using the game session ID
+      navigate(`/lobby/${gameSession.id}`);
 
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
