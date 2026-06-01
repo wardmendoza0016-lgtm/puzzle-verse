@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Upload, Hexagon } from 'lucide-react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../supabaseClient';
@@ -40,9 +40,9 @@ export default function Navbar({ session, onOpenLogin, onOpenSignup, onOpenProfi
           <a href="#" className="hover:text-white transition-colors">Explore</a>
           <a href="#" className="hover:text-white transition-colors">Community</a>
           {session && (
-            <a href="#" className="flex items-center gap-2 hover:text-white transition-colors">
+            <button onClick={onNavigateCreate} className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer bg-none border-none p-0">
               <Upload className="w-4 h-4" /> Create Puzzle
-            </a>
+            </button>
           )}
         </nav>
 
@@ -68,7 +68,7 @@ export default function Navbar({ session, onOpenLogin, onOpenSignup, onOpenProfi
                 Log In
               </button>
               <button 
-                onClick={onOpenLogin}
+                onClick={onOpenSignup}
                 className="px-4 py-2 rounded-lg bg-[#d3c5f6] text-[#3b2a60] text-sm font-bold hover:bg-white transition-all shadow-[0_0_15px_rgba(211,197,246,0.2)] cursor-pointer"
               >
                 Get Started
