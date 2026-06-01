@@ -1,7 +1,7 @@
 # PuzzleVerse - Project Architecture
 
-**Last Updated:** May 28, 2026  
-**Project Type:** React + TypeScript Landing Page with Interactive 3D Puzzle Component  
+**Last Updated:** May 28, 2026
+**Project Type:** React + TypeScript Landing Page with Interactive 3D Puzzle Component
 **Build Tool:** Vite 6.3.5  
 **Framework:** React 18.3.1 (peer dependency)
 
