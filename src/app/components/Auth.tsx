@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { supabase } from "../../supabaseClient.ts";
 
-export default function Auth({ onAuthSuccess }: { onAuthSuccess?: () => void }) {
-  const [isSignUp, setIsSignUp] = useState(false);
+interface AuthProps {
+  onAuthSuccess?: () => void;
+  initialMode?: 'login' | 'signup';
+}
+
+export default function Auth({ onAuthSuccess, initialMode = 'login' }: AuthProps) {
+  const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -23,11 +28,10 @@ export default function Auth({ onAuthSuccess }: { onAuthSuccess?: () => void }) 
           email,
           password,
           options: {
-            // This metadata payload triggers our automated profile creation script on the backend
             data: {
               username: username.trim().toLowerCase(),
               full_name: fullName.trim(),
-              avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`, // Dynamic fallback avatar placeholder
+              avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`,
             },
           },
         });
@@ -37,7 +41,6 @@ export default function Auth({ onAuthSuccess }: { onAuthSuccess?: () => void }) 
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         setSuccessMsg('Login successful!');
-        // Close modal after successful login
         setTimeout(() => onAuthSuccess?.(), 500);
       }
     } catch (err: any) {
@@ -48,12 +51,9 @@ export default function Auth({ onAuthSuccess }: { onAuthSuccess?: () => void }) 
   };
 
   return (
-    <div className="min-h-screen bg-[#090b12] text-[#d3c5f6] font-['Space_Grotesk'] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Dynamic Backing Accent Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#3b2a60] rounded-full blur-[120px] opacity-30 pointer-events-none" />
-
-      {/* Glassmorphism Auth Framework Card */}
-      <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-[0_0_50px_rgba(59,42,96,0.3)] z-10">
+    <div className="text-[#d3c5f6] font-['Space_Grotesk']">
+      {/* Glassmorphism Auth Card */}
+      <div className="w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-[0_0_50px_rgba(59,42,96,0.3)]">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-extrabold font-['Outfit'] text-white tracking-tight">
             {isSignUp ? 'Create Account' : 'Welcome Back'}
