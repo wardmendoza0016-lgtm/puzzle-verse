@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Trophy, Settings, LogOut, Grid, Check, ChevronLeft, AlertCircle, Camera } from 'lucide-react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../../supabaseClient';
 import { Session } from '@supabase/supabase-js';
 
 interface PlayerDrawerProps {
@@ -25,6 +25,7 @@ export default function PlayerDrawer({ isOpen, onClose, session }: PlayerDrawerP
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -70,6 +71,9 @@ export default function PlayerDrawer({ isOpen, onClose, session }: PlayerDrawerP
     setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
     setError('');
+    
+    // Trigger immediate upload
+    handleAvatarUpload(file);
   };
 
   const uploadAvatarToStorage = async (): Promise<string | null> => {
@@ -100,6 +104,66 @@ export default function PlayerDrawer({ isOpen, onClose, session }: PlayerDrawerP
     }
   };
 
+  const handleAvatarUpload = async (file: File) => {
+    try {
+      setUploading(true);
+      setError('');
+      
+      if (!file) {
+        throw new Error('You must select an image to upload.');
+      }
+
+      const fileExt = file.name.split('.').pop();
+      // Store the file inside a folder named after the user's ID
+      const filePath = `${session.user.id}/avatar.${fileExt}`;
+
+      // 1. Upload the file to the 'avatars' bucket (upsert replaces the old one if it exists)
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // 2. Get the public URL of the uploaded image
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      // Add a cache-buster to prevent stale images
+      const finalUrl = `${publicUrl}?v=${Date.now()}`;
+
+      console.log('✓ Upload successful. URL:', finalUrl);
+
+      // 3. Instantly update the profiles table with the new URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: finalUrl })
+        .eq('id', session.user.id);
+
+      if (updateError) {
+        console.error('Database update error:', updateError);
+        throw updateError;
+      }
+
+      console.log('✓ Database updated with new avatar URL');
+
+      // 4. Update the local UI state so it shows up immediately
+      setProfile({ ...profile, avatar_url: finalUrl });
+      setAvatarFile(null);
+      setAvatarPreview(null);
+      setError('');
+      console.log('✓ UI state updated');
+      
+    } catch (err: any) {
+      console.error('Avatar upload error:', err);
+      setError(err.message || 'Error uploading image.');
+      setAvatarFile(null);
+      setAvatarPreview(null);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSaveProfile = async () => {
     setSaving(true);
     setError('');
@@ -108,15 +172,8 @@ export default function PlayerDrawer({ isOpen, onClose, session }: PlayerDrawerP
     const cleanName = editName.trim();
 
     try {
-      // If a new file was selected, upload it first; otherwise fall back to dicebear
-      let finalAvatarUrl: string;
-      if (avatarFile) {
-        const uploaded = await uploadAvatarToStorage();
-        if (!uploaded) return; // uploadAvatarToStorage already set the error
-        finalAvatarUrl = uploaded;
-      } else {
-        finalAvatarUrl = profile?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanUsername}`;
-      }
+      // Avatar is either already uploaded (in profile.avatar_url) or we generate dicebear
+      const finalAvatarUrl = profile?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanUsername}`;
 
       const { error: updateError } = await supabase
         .from('profiles')
@@ -129,17 +186,20 @@ export default function PlayerDrawer({ isOpen, onClose, session }: PlayerDrawerP
         .eq('id', session.user.id);
 
       if (updateError) {
+        console.error('Save profile error:', updateError);
         if (updateError.code === '23505') {
           throw new Error('That username is already taken. Try another one!');
         }
         throw updateError;
       }
 
+      console.log('✓ Profile saved successfully with avatar:', finalAvatarUrl);
       setProfile({ ...profile, full_name: cleanName, username: cleanUsername, avatar_url: finalAvatarUrl });
       setAvatarFile(null);
       setAvatarPreview(null);
       setIsEditing(false);
     } catch (err: any) {
+      console.error('Profile update error:', err);
       setError(err.message || 'Failed to update profile.');
     } finally {
       setSaving(false);
@@ -218,11 +278,13 @@ export default function PlayerDrawer({ isOpen, onClose, session }: PlayerDrawerP
                       alt="Avatar"
                       className="w-full h-full rounded-full object-cover bg-[#090b12]"
                     />
-                    {/* Camera overlay — visible on hover in edit mode */}
+                    {/* Upload Overlay (Only visible in Edit Mode) */}
                     {isEditing && (
                       <div className="absolute inset-1 rounded-full bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <Camera className="w-6 h-6 text-white" />
-                        <span className="text-[9px] text-white font-bold mt-1 tracking-wide">CHANGE</span>
+                        <span className="text-[9px] text-white font-bold mt-1 tracking-wide">
+                          {uploading ? 'UPLOADING...' : 'CHANGE'}
+                        </span>
                       </div>
                     )}
                   </div>

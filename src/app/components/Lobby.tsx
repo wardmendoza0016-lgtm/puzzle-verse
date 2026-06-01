@@ -5,7 +5,7 @@ import {
   Hexagon, ArrowLeft, Copy, Check, Users, Play,
   Settings, LogOut, Shield, Grid3x3, Swords, Lock, Globe
 } from 'lucide-react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../../supabaseClient';
 import { Session } from '@supabase/supabase-js';
 
 interface LobbyProps {

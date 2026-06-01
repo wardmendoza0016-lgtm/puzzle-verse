@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Upload, Hexagon } from 'lucide-react';
 import { Session } from '@supabase/supabase-js';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../../supabaseClient';
 
 interface NavbarProps {
   session: Session | null;

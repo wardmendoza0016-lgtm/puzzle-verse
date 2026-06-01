@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Hexagon, Upload, ImagePlus, Lock, Globe, ChevronDown, ArrowLeft, Sparkles } from 'lucide-react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../../supabaseClient';
 import { Session } from '@supabase/supabase-js';
 
 interface CreatePuzzleProps {
