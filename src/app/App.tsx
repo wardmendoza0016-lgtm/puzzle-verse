@@ -95,7 +95,7 @@ export default function App() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_140%,_#3b2a60_0%,_#090b12_65%,_#090b12_100%)] pointer-events-none" />
 
       <div
-        className="absolute inset-0 opacity-15 pointer-events-none mix-blend-screen"
+        className="absolute inset-0 opacity-15 pointer-events-none mix-blend-screen hidden sm:block"
         style={{
           backgroundImage: 'linear-gradient(#d3c5f6 1px, transparent 1px), linear-gradient(90deg, #d3c5f6 1px, transparent 1px)',
           backgroundSize: '120px 120px',
@@ -104,11 +104,13 @@ export default function App() {
         }}
       />
 
-      {/* Floating Pieces */}
-      <StandalonePiece img={activePuzzleImage} x="6vw"  y="18vh" scale={1.3} rotate={15}  speed={0.6} smoothX={smoothX} smoothY={smoothY} zIndex={5} />
-      <StandalonePiece img={activePuzzleImage} x="84vw" y="12vh" scale={1.1} rotate={-25} speed={0.7} smoothX={smoothX} smoothY={smoothY} zIndex={5} />
-      <StandalonePiece img={activePuzzleImage} x="10vw" y="78vh" scale={1.5} rotate={45}  speed={0.9} smoothX={smoothX} smoothY={smoothY} zIndex={5} />
-      <StandalonePiece img={activePuzzleImage} x="85vw" y="72vh" scale={1.4} rotate={-15} speed={0.8} smoothX={smoothX} smoothY={smoothY} zIndex={5} />
+      {/* Floating Pieces - Hidden on mobile, visible on md+ screens */}
+      <div className="hidden md:block">
+        <StandalonePiece img={activePuzzleImage} x="6vw"  y="18vh" scale={1.3} rotate={15}  speed={0.6} smoothX={smoothX} smoothY={smoothY} zIndex={5} />
+        <StandalonePiece img={activePuzzleImage} x="84vw" y="12vh" scale={1.1} rotate={-25} speed={0.7} smoothX={smoothX} smoothY={smoothY} zIndex={5} />
+        <StandalonePiece img={activePuzzleImage} x="10vw" y="78vh" scale={1.5} rotate={45}  speed={0.9} smoothX={smoothX} smoothY={smoothY} zIndex={5} />
+        <StandalonePiece img={activePuzzleImage} x="85vw" y="72vh" scale={1.4} rotate={-15} speed={0.8} smoothX={smoothX} smoothY={smoothY} zIndex={5} />
+      </div>
 
       {/* Main Content Layer */}
       <div className="relative z-20 flex flex-col min-h-screen">
@@ -121,21 +123,21 @@ export default function App() {
           onNavigateCreate={() => navigate('/create')}
         />
 
-        <main className="flex-1 flex flex-col items-center justify-start pt-10 md:pt-14 px-4">
-          <div className="text-center max-w-4xl mx-auto z-30">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] font-bold text-[#d3c5f6] tracking-widest uppercase">Multiplayer Lobbies Live</span>
+        <main className="flex-1 flex flex-col items-center justify-start pt-6 md:pt-14 px-4">
+          <div className="text-center max-w-4xl mx-auto z-30 w-full">
+            <div className="inline-flex items-center gap-2 px-2.5 md:px-3.5 py-1 md:py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-4 md:mb-6">
+              <span className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[8px] md:text-[10px] font-bold text-[#d3c5f6] tracking-wider md:tracking-widest uppercase">Multiplayer Lobbies Live</span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight font-['Outfit'] leading-none text-white">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight font-['Outfit'] leading-tight md:leading-none text-white">
               Your Images. Your Friends. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d3c5f6] via-indigo-300 to-[#d3c5f6]">
                 Your World. Puzzled.
               </span>
             </h1>
 
-            <p className="mt-6 text-base md:text-lg text-[#d3c5f6]/70 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-4 md:mt-6 text-sm md:text-base lg:text-lg text-[#d3c5f6]/70 max-w-2xl mx-auto leading-relaxed px-2">
               {session ? (
                 <>Welcome back, <span className="text-white font-bold">{session.user.email}</span>! Ready to complete together?</>
               ) : (
@@ -143,18 +145,18 @@ export default function App() {
               )}
             </p>
 
-            <div className="mt-8 flex items-center justify-center">
+            <div className="mt-6 md:mt-8 flex items-center justify-center">
               {session ? (
                 <button
                   onClick={() => navigate('/create')}
-                  className="px-7 py-3.5 rounded-xl bg-[#d3c5f6] text-[#3b2a60] font-['Outfit'] font-bold text-base transition-all shadow-[0_0_30px_rgba(211,197,246,0.25)] hover:shadow-[0_0_40px_rgba(211,197,246,0.45)] hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer"
+                  className="px-5 md:px-7 py-2.5 md:py-3.5 rounded-lg md:rounded-xl bg-[#d3c5f6] text-[#3b2a60] font-['Outfit'] font-bold text-sm md:text-base transition-all shadow-[0_0_30px_rgba(211,197,246,0.25)] hover:shadow-[0_0_40px_rgba(211,197,246,0.45)] hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer"
                 >
                   <Play className="w-4 h-4 fill-[#3b2a60]" /> Create a New Puzzle
                 </button>
               ) : (
                 <button
                   onClick={() => { setAuthMode('signup'); setShowAuthModal(true); }}
-                  className="px-7 py-3.5 rounded-xl bg-[#d3c5f6] text-[#3b2a60] font-['Outfit'] font-bold text-base transition-all shadow-[0_0_30px_rgba(211,197,246,0.25)] hover:shadow-[0_0_40px_rgba(211,197,246,0.45)] hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer"
+                  className="px-5 md:px-7 py-2.5 md:py-3.5 rounded-lg md:rounded-xl bg-[#d3c5f6] text-[#3b2a60] font-['Outfit'] font-bold text-sm md:text-base transition-all shadow-[0_0_30px_rgba(211,197,246,0.25)] hover:shadow-[0_0_40px_rgba(211,197,246,0.45)] hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer"
                 >
                   <Play className="w-4 h-4 fill-[#3b2a60]" /> Start Your First Puzzle Free
                 </button>

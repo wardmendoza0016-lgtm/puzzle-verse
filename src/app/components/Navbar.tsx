@@ -25,14 +25,14 @@ export default function Navbar({ session, onOpenLogin, onOpenSignup, onOpenProfi
   }, [session]);
 
   return (
-    <header className="w-full max-w-7xl mx-auto px-6 py-4 mt-4 z-50 pointer-events-auto">
-      <div className="w-full flex items-center justify-between px-6 py-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg">
+    <header className="w-full max-w-7xl mx-auto px-3 md:px-6 py-3 md:py-4 mt-2 md:mt-4 z-50 pointer-events-auto">
+      <div className="w-full flex items-center justify-between px-3 md:px-6 py-2 md:py-3 rounded-lg md:rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg gap-2">
         {/* Logo */}
-        <div className="flex items-center gap-3 cursor-pointer">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#3b2a60] to-[#251842] flex items-center justify-center border border-white/10 shadow-[0_0_15px_rgba(211,197,246,0.2)]">
-            <Hexagon className="text-[#d3c5f6] w-5 h-5 fill-[#d3c5f6]/10" />
+        <div className="flex items-center gap-2 md:gap-3 cursor-pointer flex-shrink-0">
+          <div className="w-8 md:w-9 h-8 md:h-9 rounded-lg md:rounded-xl bg-gradient-to-br from-[#3b2a60] to-[#251842] flex items-center justify-center border border-white/10 shadow-[0_0_15px_rgba(211,197,246,0.2)]">
+            <Hexagon className="text-[#d3c5f6] w-4 md:w-5 h-4 md:h-5 fill-[#d3c5f6]/10" />
           </div>
-          <span className="text-lg font-extrabold tracking-tight font-['Outfit'] text-white">PuzzleVerse</span>
+          <span className="text-base md:text-lg font-extrabold tracking-tight font-['Outfit'] text-white hidden sm:inline">PuzzleVerse</span>
         </div>
 
         {/* Links */}
@@ -47,7 +47,7 @@ export default function Navbar({ session, onOpenLogin, onOpenSignup, onOpenProfi
         </nav>
 
         {/* Auth Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
           {session ? (
             <button 
               onClick={onOpenProfile}
@@ -63,13 +63,13 @@ export default function Navbar({ session, onOpenLogin, onOpenSignup, onOpenProfi
             <>
               <button 
                 onClick={onOpenLogin}
-                className="text-sm font-semibold text-[#d3c5f6]/80 hover:text-white transition-colors cursor-pointer"
+                className="text-xs md:text-sm font-semibold text-[#d3c5f6]/80 hover:text-white transition-colors cursor-pointer hidden sm:inline"
               >
                 Log In
               </button>
               <button 
                 onClick={onOpenSignup}
-                className="px-4 py-2 rounded-lg bg-[#d3c5f6] text-[#3b2a60] text-sm font-bold hover:bg-white transition-all shadow-[0_0_15px_rgba(211,197,246,0.2)] cursor-pointer"
+                className="px-3 md:px-4 py-1.5 md:py-2 rounded-lg bg-[#d3c5f6] text-[#3b2a60] text-xs md:text-sm font-bold hover:bg-white transition-all shadow-[0_0_15px_rgba(211,197,246,0.2)] cursor-pointer min-h-[40px] md:min-h-[auto]"
               >
                 Get Started
               </button>
